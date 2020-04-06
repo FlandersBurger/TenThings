@@ -14,6 +14,7 @@ const stats = require('./stats');
 const hints = require('./hints');
 
 const List = require('../models/list');
+const User = require('../models/user');
 const TenThings = require('../models/tenthings');
 
 const MAX_HINTS = hints.getMaxHints();

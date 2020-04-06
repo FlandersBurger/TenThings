@@ -6,6 +6,7 @@ const request = require('request');
 const bot = require('../telegram');
 const stats = require('./stats');
 const List = require('../models/list');
+const User = require('../models/user');
 const TenThings = require('../models/tenthings');
 const TenThingsStats = require('../models/tenthings-stats');
 

@@ -2,7 +2,7 @@ const schedule = require('node-schedule');
 const _ = require('underscore');
 const moment = require('moment');
 const request = require('request');
-const config = require('../config');
+//const config = require('../config');
 const bot = require('../telegram');
 const stats = require('./stats');
 const List = require('../models/list');
@@ -119,7 +119,7 @@ const dailyScore = schedule.scheduleJob('0 0 0 * * *', () => {
               setTimeout(() => {
                 bot.sendMessage(game.chat_id, `<b>${message} won with ${highScore} points!</b>`);
                 console.log(message);
-                if (game.chat_id != config.groupChat) {
+                if (game.chat_id != process.env.GROUP_CHAT) {
                   bot.sendMessage(game.chat_id, 'Come join us in the <a href="https://t.me/tenthings">Ten Things Supergroup</a>!');
                 }
                 TenThings.updateMany(

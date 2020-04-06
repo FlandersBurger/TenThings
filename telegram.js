@@ -1,5 +1,5 @@
 const request = require('request');
-const config = require('./config');
+//const config = require('./config');
 
 function TelegramBot() {
   const bot = this;
@@ -73,11 +73,11 @@ function TelegramBot() {
   };
 
   bot.notifyAdmin = msg => {
-    b.sendMessage(process.env.MASTER_CHAT || config.masterChat, msg);
+    b.sendMessage(process.env.MASTER_CHAT, msg);
   };
 
   bot.notifyAdmins = msg => {
-    b.sendMessage(process.env.ADMIN_CHAT || config.adminChat, msg);
+    b.sendMessage(process.env.ADMIN_CHAT, msg);
   };
 
   bot.broadcast = (channels, message) => {
@@ -173,7 +173,7 @@ function TelegramBot() {
   };
 }
 
-const TOKEN = process.env.TELEGRAM_TOKEN || config.tokens.telegram.tenthings;
+const TOKEN = process.env.TELEGRAM_TOKEN;
 const b = new TelegramBot();
 b.init(TOKEN).then(() => {
     //b.deleteWebhook();

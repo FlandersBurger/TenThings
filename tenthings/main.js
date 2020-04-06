@@ -4,7 +4,7 @@ const FuzzyMatching = require('fuzzy-matching');
 const Queue = require('bull');
 const moment = require('moment');
 const request = require('request');
-const config = require('../config');
+//const config = require('../config');
 const bot = require('../telegram');
 const messages = require('./messages');
 const keyboards = require('./keyboards');
@@ -80,9 +80,9 @@ games.forEach(function(game, gameIndex) {
 
 const guessQueue = new Queue('processGuess', {
   redis: {
-    port: config.redis.port || 6379,
-    host: process.env.REDIS_URL || 'localhost',
-    password: config.redis.password || ''
+    port: 6379,
+    host: process.env.REDIS_URL,
+    password: ''
   }
 });
 
@@ -222,7 +222,7 @@ const queueGuess = (game, msg) => {
       messages.sass(guess.msg.text)
       .then(sass => {
         if (sass) {
-          if (game.chat_id != (process.env.MASTER_CHAT || config.masterChat)) bot.notifyAdmin(game.list.name + '\n' + guess.msg.text + '\n' + sass);
+          if (game.chat_id != process.env.MASTER_CHAT) bot.notifyAdmin(game.list.name + '\n' + guess.msg.text + '\n' + sass);
           if (sass.indexOf('http') === 0) {
             if (sass.indexOf('.gif') > 0) {
               bot.sendAnimation(game.chat_id, sass);
@@ -709,7 +709,7 @@ router.post('/', ({body}, res, next) => {
     } else if (data.type === 'score') {
       stats.getScores(body.callback_query.message.chat.id, data.id);
     } else if (data.type === 'setting') {
-      if (body.callback_query.message.chat_id != (process.env.MASTER_CHAT || config.masterChat)) {
+      if (body.callback_query.message.chat_id != process.env.MASTER_CHAT) {
         bot.checkAdmin(body.callback_query.message.chat.id, body.callback_query.message.from.id)
         .then(admin => {
           if (admin) {
@@ -735,17 +735,17 @@ router.post('/', ({body}, res, next) => {
     return res.sendStatus(200);
   } else if (!body.message) {
     msg = {
-      id: (process.env.MASTER_CHAT || config.masterChat),
+      id: process.env.MASTER_CHAT,
       from: {
         first_name: 'Bot Error'
       },
       command: '/error',
       text: JSON.stringify(body),
       chat: {
-        id: (process.env.MASTER_CHAT || config.masterChat)
+        id: process.env.MASTER_CHAT
       }
     };
-  } else if (body.message.chat.id === (process.env.ADMIN_CHAT || config.adminChat)) {
+  } else if (body.message.chat.id === process.env.ADMIN_CHAT) {
     //Ignore game commands in the admin chat
     return res.sendStatus(200);
   } else if (!body.message.text) {
@@ -803,14 +803,14 @@ router.post('/', ({body}, res, next) => {
       return res.sendStatus(200);
     } else {
       msg = {
-        id: (process.env.MASTER_CHAT || config.masterChat),
+        id: process.env.MASTER_CHAT,
         from: {
           first_name: 'Bot Error'
         },
         command: '/error',
         text: JSON.stringify(body),
         chat: {
-          id: (process.env.MASTER_CHAT || config.masterChat)
+          id: process.env.MASTER_CHAT
         }
       };
     }
@@ -892,7 +892,7 @@ router.post('/', ({body}, res, next) => {
 
 router.get('/', ({query}, res, next) => {
   const token = query['hub.verify_token'];
-  if (query['hub.verify_token'] === (process.env.TELEGRAM_TOKEN || config.tokens.facebook.tenthings)) {
+  if (query['hub.verify_token'] === process.env.TELEGRAM_TOKEN) {
     res.status(200).send(query['hub.challenge']);
   } else {
     res.sendStatus(200);
@@ -1076,7 +1076,7 @@ function evaluateCommand(res, msg, game, player, isNew) {
       }
       break;
     case '/notify':
-      if (msg.chat.id === (process.env.MASTER_CHAT || config.masterChat)) {
+      if (msg.chat.id === process.env.MASTER_CHAT) {
         TenThings.find({}).select('chat_id')
         .then(games => {
           bot.broadcast(games.map(({chat_id}) => chat_id), msg.text.substring(msx.command, msg.text.length));
@@ -1103,7 +1103,7 @@ function evaluateCommand(res, msg, game, player, isNew) {
       }
       break;
     case '/settings':
-      if (game.chat_id != (process.env.MASTER_CHAT || config.masterChat)) {
+      if (game.chat_id != process.env.MASTER_CHAT) {
         bot.checkAdmin(game.chat_id, msg.from.id)
         .then(admin => {
           if (admin) {

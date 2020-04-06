@@ -4,6 +4,7 @@ const FuzzyMatching = require('fuzzy-matching');
 const Queue = require('bull');
 const moment = require('moment');
 const request = require('request');
+const url = require('url');
 //const config = require('../config');
 const bot = require('../telegram');
 const messages = require('./messages');
@@ -78,12 +79,7 @@ games.forEach(function(game, gameIndex) {
 });
 */
 
-const guessQueue = new Queue('processGuess', {
-  redis: {
-    port: 6379,
-    host: 'localhost'
-  }
-});
+const guessQueue = new Queue('processGuess', process.env.REDIS_URL);
 
 
 /*

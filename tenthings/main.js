@@ -80,7 +80,8 @@ games.forEach(function(game, gameIndex) {
 
 const guessQueue = new Queue('processGuess', {
   redis: {
-    host: process.env.REDIS_URL
+    port: 6379,
+    host: 'localhost'
   }
 });
 

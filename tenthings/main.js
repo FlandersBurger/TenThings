@@ -80,9 +80,9 @@ games.forEach(function(game, gameIndex) {
 
 const guessQueue = new Queue('processGuess', {
   redis: {
-    port: config.redis.port,
-    host: 'localhost',
-    password: config.redis.password
+    port: config.redis.port || 6379,
+    host: process.env.REDIS_URL || 'localhost',
+    password: config.redis.password || ''
   }
 });
 
@@ -248,6 +248,10 @@ const queueingGuess = (guess) => {
   });
   */
 };
+
+  guessQueue.add({game: '123'}, { removeOnComplete: true }, () => {
+    console.log(`${guess.game} - Guess evaluated: "${guess.msg.text}" by ${guess.msg.from.first_name}`);
+  });
 
 guessQueue.process(({data}, done) => {
   processGuess(data)

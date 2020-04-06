@@ -22,11 +22,12 @@ function TelegramBot() {
     });
   };
 
-  bot.setWebhook = api => new Promise((resolve, reject) => {
+  bot.setWebhook = () => new Promise((resolve, reject) => {
     //var url = 'https://api.telegram.org/beta/bot' + bot.token + '/setWebhook?url=https://belgocanadian.com/bots/' + api;
-    const url = `https://api.telegram.org/bot${bot.token}/setWebhook?url=${process.env.TELEGRAM_URI}/${api}`;
+    const url = `https://api.telegram.org/bot${bot.token}/setWebhook?url=${process.env.TELEGRAM_URI}`;
     request(url, (error, r, body) => {
       if (error) return console.error(error);
+      console.log(body);
       resolve(body);
     });
   });
@@ -35,6 +36,7 @@ function TelegramBot() {
     const url = `https://api.telegram.org/bot${bot.token}/getWebhookInfo`;
     request(url, (error, r, body) => {
       if (error) return;
+      console.log(body);
       resolve(body);
     });
   });
@@ -178,10 +180,10 @@ const b = new TelegramBot();
 b.init(TOKEN).then(() => {
     //b.deleteWebhook();
   b.getWebhook().then(body => {
-    if (JSON.parse(body).result && 'https://belgocanadian.com/bots/tenthings' === JSON.parse(body).result.url) {
+    if (JSON.parse(body).result && `${process.env.TELEGRAM_URI}` === JSON.parse(body).result.url) {
       console.log('Webhook Set');
     } else {
-      b.setWebhook('tenthings').then(body => {
+      b.setWebhook('').then(body => {
         b.introduceYourself();
       });
     }

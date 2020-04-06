@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.use(logger('dev'));
 
-app.use('/', require('./tenthings/main'));
+//app.use('/', require('./tenthings/main'));
 
 const port = process.env.PORT || 3000;
 

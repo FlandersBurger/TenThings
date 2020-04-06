@@ -244,15 +244,6 @@ const queueingGuess = (guess) => {
   */
 };
 
-try {
-
-    guessQueue.add({game: '123'}, { removeOnComplete: true }, () => {
-      console.log(`${guess.game} - Guess evaluated: "${guess.msg.text}" by ${guess.msg.from.first_name}`);
-    });
-} catch (e) {
-  console.error(e);
-}
-
 guessQueue.process(({data}, done) => {
   processGuess(data)
   .then(() => {
